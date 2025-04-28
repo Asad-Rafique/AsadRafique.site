@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart' show kIsWeb; // For platform detection
 void _launchCVDownload() async {
   try {
     // Step 1: Load the CV file from the assets folder
-    final ByteData cvData = await rootBundle.load('assets/AsadRafiqueResumeIsl.pdf');
+    final ByteData cvData = await rootBundle.load('assets/AsadRafiqueRasumeLhr.pdf');
     
     // Step 2: Handle download based on platform
     if (kIsWeb) {
@@ -25,7 +25,7 @@ void _launchCVDownload() async {
       final blob = html.Blob([bytes], 'application/pdf');
       final url = html.Url.createObjectUrlFromBlob(blob);
       final anchor = html.AnchorElement(href: url)
-        ..setAttribute('download', 'AsadRafiqueResumeIsl.pdf')
+        ..setAttribute('download', 'AsadRafiqueRasumeLhr.pdf')
         ..click();
       html.Url.revokeObjectUrl(url);
       
@@ -33,7 +33,7 @@ void _launchCVDownload() async {
     } else {
       // Mobile/Desktop platform: Save to file system
       final Directory directory = await getApplicationDocumentsDirectory();
-      final String filePath = '${directory.path}/AsadRafiqueResumeIsl.pdf';
+      final String filePath = '${directory.path}/AsadRafiqueRasumeLhr.pdf';
       
       final File file = File(filePath);
       await file.writeAsBytes(cvData.buffer.asUint8List());
@@ -267,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                     _buildSection(
                       _sectionKeys[3],
                       maxContentWidth,
-                      CVSection(_launchCVDownload, _scrollToSection),
+                      CVSection(_launchResumeDownload, _scrollToSection),
                     ),
 
                     const SizedBox(height: 40),
@@ -304,9 +304,9 @@ class _HomePageState extends State<HomePage> {
 
   void _launchResumeDownload() async {
     try {
-      // Step 1: Load the resume file from the assets folder
-      final ByteData resumeData = await rootBundle.load('assets/AsadRafiqueResumeLhr.pdf');
-
+      // Fix the typo in the filename (Rasume instead of Resume)
+      final ByteData resumeData = await rootBundle.load('assets/AsadRafiqueRasumeLhr.pdf');
+      
       // Step 2: Handle download based on platform
       if (kIsWeb) {
         // Web platform: Use HTML download
@@ -314,7 +314,7 @@ class _HomePageState extends State<HomePage> {
         final blob = html.Blob([bytes], 'application/pdf');
         final url = html.Url.createObjectUrlFromBlob(blob);
         final anchor = html.AnchorElement(href: url)
-          ..setAttribute('download', 'AsadRafiqueResumeLhr.pdf')
+          ..setAttribute('download', 'AsadRafiqueRasumeLhr.pdf')
           ..click();
         html.Url.revokeObjectUrl(url);
         
@@ -322,15 +322,14 @@ class _HomePageState extends State<HomePage> {
       } else {
         // Mobile/Desktop platform: Save to file system
         final Directory directory = await getApplicationDocumentsDirectory();
-        final String filePath = '${directory.path}/AsadRafiqueResumeLhr.pdf';
-
-        // Write the file data to the local file
+        final String filePath = '${directory.path}/AsadRafiqueRasumeLhr.pdf';
+        
         final File file = File(filePath);
         await file.writeAsBytes(resumeData.buffer.asUint8List());
-
+        
         // Open the file
         await OpenFile.open(filePath);
-
+        
         print('Resume downloaded and saved to $filePath');
       }
     } catch (e) {
@@ -350,7 +349,7 @@ class _HomePageState extends State<HomePage> {
       ElevatedButton.icon(
         icon: const Icon(Icons.download_rounded),
         label: const Text('Resume'),
-        onPressed: _launchCVDownload,
+        onPressed: _launchResumeDownload,
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: Colors.black87,
@@ -375,7 +374,7 @@ class _HomePageState extends State<HomePage> {
       const SizedBox(width: 8),
       IconButton(
         icon: const Icon(Icons.download_rounded, color: Colors.black87),
-        onPressed: _launchCVDownload,
+        onPressed: _launchResumeDownload,
         tooltip: 'Download Resume',
       ),
       const SizedBox(width: 8),
